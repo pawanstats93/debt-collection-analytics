@@ -119,7 +119,31 @@ Customers with 120+ days delinquency should be flagged for legal action, settlem
 
 By combining delinquency severity + outstanding balance, the query helps identify “high-risk, high-value” accounts, which are the most important segment for business impact.
 
+### 3. Recovery Metrics
 
+-> Overall recovery rate is ~30.1%, meaning the business is recovering only about one-third of total outstanding debt, indicating significant room for improvement.
+-> High revenue leakage (~70%) remains uncollected, with ~$18.6M still outstanding, representing a major financial risk and lost opportunity.
+-> Collection efficiency is relatively low, suggesting potential gaps in timing, prioritization, or collection strategies (e.g., late intervention or weak follow-ups).
+
+Strong need for early-stage intervention:
+
+-> Improving recovery in 0–60 day delinquency buckets could significantly boost this KPI, as recovery probability declines with time.
+
+This KPI should be segmented for deeper insights:
+
+-> The 30% average may hide performance differences—breaking it down by risk level, delinquency bucket, or region can reveal where collections are failing or succeeding.
+
+### 4. Delinquency Bucket-wise Recovery Rate
+
+-> Recovery rates are nearly identical (~30%) across all buckets → Indicates no strong advantage of early vs late collections, which is unusual.
+
+-> 61–90 days shows the highest recovery (~30.55%) → Suggests this is the most responsive stage for collections.
+
+-> 0–30 days has the lowest recovery (~29.66%) → Highlights inefficiency in early intervention, where recovery should be easiest.
+
+-> 90+ bucket drives the highest total recovery (~$39.6M) → Due to large account volume, making it critical despite slightly lower efficiency.
+
+-> Lack of recovery drop in late stages → Implies either strong late recovery efforts or weak early-stage strategy, needing optimization.
 
 
 
