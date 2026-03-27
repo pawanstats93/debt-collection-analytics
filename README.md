@@ -87,11 +87,15 @@ Maintain structured tracking for audit & compliance
 
 ### 1. Delinquency Analysis (DELINQUENCY BUCKET ANALYSIS (PRIORITIZATION STRATEGY))
 
-**90+ days delinquency is the biggest risk pool, holding the highest outstanding debt (~$132M), making it the top priority for recovery efforts.
-**Early-stage buckets (0–90 days) collectively hold significant debt (~$120M+), indicating strong opportunity for preventive collections before accounts worsen.
-**Account volume is heavily skewed toward 90+ days (25K vs ~8K), suggesting accounts are aging without timely intervention.
-**Average debt per customer is nearly identical (~$5.2K across all buckets), meaning delinquency timing—not loan size—drives risk.
-**Operational gap identified: High concentration in 90+ days implies inefficiencies in early collection strategies, highlighting the need for faster follow-ups and proactive outreach.
+90+ days delinquency is the biggest risk pool, holding the highest outstanding debt (~$132M), making it the top priority for recovery efforts.
+
+Early-stage buckets (0–90 days) collectively hold significant debt (~$120M+), indicating strong opportunity for preventive collections before accounts worsen.
+
+Account volume is heavily skewed toward 90+ days (25K vs ~8K), suggesting accounts are aging without timely intervention.
+
+Average debt per customer is nearly identical (~$5.2K across all buckets), meaning delinquency timing—not loan size—drives risk.
+
+Operational gap identified: High concentration in 90+ days implies inefficiencies in early collection strategies, highlighting the need for faster follow-ups and proactive outreach.
 
 ### 2. Risk Identification (Very HIGH-RISK ACCOUNT IDENTIFICATION)
 
