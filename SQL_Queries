@@ -1,1 +1,320 @@
+Use [US Debt Collection]
+
+select * from debt_accounts_dataset
+select count(*) from debt_accounts_dataset
+
+
+--1. DELINQUENCY BUCKET ANALYSIS (PRIORITIZATION STRATEGY)
+-- ============================================
+-- PURPOSE:
+-- Analyze distribution of accounts across delinquency buckets
+-- Helps prioritize collection efforts and resource allocation
+-- ============================================
+
+select
+	delinquency_bucket,
+	count(account_id) as total_accounts, --Total number of customers in each bucket
+	sum(debt_amount) as total_outstanding_debt, --Total money pending in each bucket
+	round(avg(cast(debt_amount as decimal(10,2))),2) as avg_debt_per_customer   --Average exposure per account (risk intensity)
+from debt_accounts_dataset
+group by delinquency_bucket
+order by total_outstanding_debt desc
+
+--Business Insight:
+--I used delinquency segmentation to prioritize high-risk accounts and optimize collection strategy
+--If 90+ days bucket has highest debt → serious risk
+--If 0–30 has high volume → early intervention opportunity
+----------Helps decide:-------------
+--Where to focus calling team
+--Which accounts need escalation
+
+-- 2. Very HIGH-RISK ACCOUNT IDENTIFICATION
+-- ============================================
+-- PURPOSE:
+-- Identify accounts that require immediate collection action
+-- Based on delay + risk level + high outstanding balance
+-- ============================================
+
+select
+	account_id,
+	customer_name,
+	state,
+	debt_amount,
+	delinquency_days,
+	risk_level,
+	--Categorizing severity for action
+	Case
+		when delinquency_days > 120 then 'Critical Risk'
+		when delinquency_days > 90 then 'High Risk'
+		when delinquency_days > 60 then 'Medium Risk'
+		Else 'Low Risk'
+	end as risk_category
+from debt_accounts_dataset
+where delinquency_days > 60 --Focus on risky accounts
+order by debt_amount desc   --Highest financialimpact first
+
+--Business Insight:
+--I identified high-risk accounts using delinquency and exposure to support early intervention strategies.
+--90+ days = very low recovery probability
+--High balance + high delay = top priority accounts
+--These accounts may require:
+--Immediate calls
+--Legal escalation
+--Settlement offers
+
+--3. RECOVERY RATE ANALYSIS (CORE KPI)
+-- ============================================
+-- PURPOSE:
+-- Measure overall efficiency of collection process
+-- Recovery Rate = Total Collected / Total Outstanding
+-- ============================================
+
+Select 
+	sum(debt_amount) as total_outstanding, -- Total money that should be collected
+	sum(amount_paid) as total_recovered,    -- Actual money collected 
+
+	--Recovery percentage calculated
+	round(sum(amount_paid)*1.0/nullif(sum(debt_amount),0),3)*100 as recovery_rate_percentage
+from debt_accounts_dataset
+
+--Business Insight:
+--I evaluated recovery performance to assess efficiency of collection strategies
+--Higher recovery rate = better collection performance
+--Low recovery may indicate:
+---Poor follow-up
+---Inefficient calling strategy
+---Late intervention
+
+--4. RECOVERY BY DELINQUENCY (CRITICAL INSIGHT) OR Delinquency Bucket-wise Recovery Rate
+-- ============================================
+-- PURPOSE:
+-- Compare recovery efficiency across delinquency buckets
+-- Helps understand when recovery is most effective
+-- ============================================
+select
+	delinquency_bucket,
+	count(account_id) as total_accounts, --Total number of accounts in each bucket
+	sum(debt_amount) as total_debt, --Total debt amount (How much should be collected)
+	sum(amount_paid) as total_recovered, --Total amount recovered (How much actually paid)
+
+	((SUM(amount_paid) * 1.0) / (NULLIF(SUM(debt_amount), 0))) * 100 AS recovery_rate_percentage
+
+from debt_accounts_dataset
+group by delinquency_bucket ---- Grouping by delinquency bucket to analyze performance by risk segment
+order by recovery_rate_percentage desc
+
+
+--In General
+--Early buckets (0–30 days) → highest recovery
+--Late buckets (90+) → lowest recovery
+--This proves:
+--“Early follow-up = higher success”
+
+--Business Insight:
+--Recovery rate is ~30% across all buckets → consistent performance
+--“Recovery performance is consistent across all delinquency segments.”
+
+--61–90 bucket shows highest recovery
+--“Mid-stage delinquency accounts show slightly better recovery.”
+
+--90+ bucket has lowest recovery → high risk
+--“Late-stage delinquency accounts have lower recovery and higher risk.”
+
+--0–30 bucket recovery is lower than expected
+--“Early-stage recovery is lower, indicating missed intervention opportunities.”
+
+--Similar recovery across buckets → no targeted strategy
+--“Uniform recovery suggests lack of segment-based collection strategy.”
+	
+
+--5. PTP (PROMISE TO PAY) ANALYSIS
+-- ============================================
+-- PURPOSE:
+-- Evaluate how effective customer commitments (PTP) are
+-- ============================================
+
+select 
+	account_id,
+	customer_name,
+	debt_amount,
+	amount_paid,
+	promise_to_pay,
+	ptp_date,
+	last_payment_date,
+
+	--Evaluate PTP behavior
+	case
+		when promise_to_pay = 1
+			and amount_paid > 0
+			and last_payment_date <= ptp_date
+			then 'ptp kept'
+		when promise_to_pay=1
+			and amount_paid=0
+			then 'ptp brocken'
+
+		when promise_to_pay=1
+			and last_payment_date > ptp_date
+			then 'ptp delayed'
+
+		else 'No ptp'
+	end as ptp_status
+from debt_accounts_dataset
+
+--Business Insight:
+--Evaluated PTP success to measure effectiveness of collection commitments.
+--Reliable vs unreliable customers
+--Improve follow-up strategy
+
+--High “PTP broken” → unreliable customers
+--“I identified broken promises as a sign of low customer reliability.”
+
+--“PTP delayed” indicates payment intent but weak follow-through
+--“I observed delayed payments, indicating intent but lack of timely execution.”
+
+--“No PTP” accounts → low engagement
+--“I found that accounts without PTP show low engagement and higher recovery risk.”
+
+--Higher PTP kept → higher recovery rate
+--“PTP adherence strongly correlates with improved recovery performance.”
+
+--“PTP analysis helps identify customer intent, reliability, and effectiveness of collection strategies.”
+
+
+--6. COLLECTOR PERFORMANCE ANALYSIS
+-- ============================================
+-- PURPOSE:
+-- Evaluate performance of collection agents
+-- ============================================
+
+select 
+    collector_id,
+    collector_name,
+    count(account_id) as accounts_handled,
+    sum(amount_paid) as total_collected,
+    avg(contact_attempts) as avg_calls_made
+
+from debt_accounts_dataset
+group by collector_id, collector_name
+order by total_collected desc
+
+--Business Insight:
+--Identify:
+--Top performers
+--Low-performing agents
+--Optimize:
+---Training
+---Work allocation
+
+--“I evaluated collector performance using recovery metrics and contact attempts.”
+
+--7. AGING REPORT (MOST IMPORTANT)
+-- ============================================
+-- PURPOSE:
+-- Show distribution of outstanding debt across time buckets
+-- Core report used in collections industry
+-- ============================================
+
+select 
+    delinquency_bucket,
+
+    count(*) as total_accounts,
+    sum(debt_amount) as total_outstanding,
+    sum(amount_paid) as total_recovered
+
+from debt_accounts_dataset
+group by delinquency_bucket
+order by delinquency_bucket
+
+--Business Insight:
+--Shows where most money is stuck
+---Helps:
+--Strategy planning
+--Risk forecasting
+
+--“I built aging reports to track debt distribution and prioritize collections.”
+
+--8. COLLECTION WORKFLOW (REAL BUSINESS SIMULATION)
+-- ============================================
+-- PURPOSE:
+-- Simulate real-world collection action strategy
+-- ============================================
+
+select
+    account_id,
+    customer_name,
+    delinquency_days,
+    debt_amount,
+
+    case 
+        when delinquency_days > 90 then 'Immediate Call + Escalation'
+        when delinquency_days > 60 then 'High Priority Call'
+        when delinquency_days > 30 then 'Reminder Call'
+        else 'Monitor Account'
+    end as action_plan
+
+from debt_accounts_dataset
+
+order by delinquency_days desc
+
+-- Business Insight:
+--Automates call prioritization
+--Improves:
+---Efficiency
+---Recovery rate
+
+--“I designed workflow logic to prioritize outbound collection actions.”
+
+--9. Simulated payment negotiation scenarios
+-- ============================================
+-- PURPOSE:
+-- Simulate payment negotiation scenarios
+-- Based on customer affordability
+-- ============================================
+
+select 
+    account_id,
+    debt_amount,
+    amount_paid,
+
+    -- Remaining balance after payment
+    (debt_amount - amount_paid) AS remaining_balance,
+
+    -- Suggested settlement logic (example)
+    case 
+        when delinquency_days > 90 then debt_amount * 0.7   -- 30% discount
+        when delinquency_days > 60 then debt_amount * 0.8   -- 20% discount
+        ELSE debt_amount * 0.9                              -- 10% discount
+    end as suggested_settlement_amount
+
+from debt_accounts_dataset
+
+--Business Insight:
+--Older debt → higher discount needed
+--Helps collectors negotiate realistically
+
+--10. Maintained structured records aligned with US collections & FDCPA
+-- ============================================
+-- PURPOSE:
+-- Maintain structured tracking for audit & compliance
+-- (Important for FDCPA awareness)
+-- ============================================
+
+SELECT 
+    account_id,
+    customer_name,
+    contact_attempts,
+    last_payment_date,
+    ptp_date,
+
+    -- Flag excessive contact attempts (compliance risk)
+    CASE 
+        WHEN contact_attempts > 5 THEN 'Review Required'
+        ELSE 'Within Limit'
+    END AS compliance_flag
+
+FROM debt_accounts;
+
+--Business Insight:
+--FDCPA restricts excessive or aggressive contact
+--This helps ensure ethical collection practices
 
