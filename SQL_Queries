@@ -312,7 +312,7 @@ SELECT
         ELSE 'Within Limit'
     END AS compliance_flag
 
-FROM debt_accounts;
+FROM debt_accounts_dataset
 
 --Business Insight:
 --FDCPA restricts excessive or aggressive contact
