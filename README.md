@@ -122,7 +122,9 @@ By combining delinquency severity + outstanding balance, the query helps identif
 ### 3. Recovery Metrics
 
 -> Overall recovery rate is ~30.1%, meaning the business is recovering only about one-third of total outstanding debt, indicating significant room for improvement.
+
 -> High revenue leakage (~70%) remains uncollected, with ~$18.6M still outstanding, representing a major financial risk and lost opportunity.
+
 -> Collection efficiency is relatively low, suggesting potential gaps in timing, prioritization, or collection strategies (e.g., late intervention or weak follow-ups).
 
 Strong need for early-stage intervention:
@@ -145,7 +147,53 @@ This KPI should be segmented for deeper insights:
 
 -> Lack of recovery drop in late stages → Implies either strong late recovery efforts or weak early-stage strategy, needing optimization.
 
+### 5. PTP (PROMISE TO PAY) Analysis
 
+-> PTP effectiveness can be directly measured → “PTP Kept” shows successful commitments, helping evaluate how reliable customer promises are as a recovery strategy.
+
+-> Broken and delayed PTPs indicate collection risk → High “PTP Broken/Delayed” suggests low customer reliability, requiring stricter follow-ups or alternative strategies.
+
+-> “No PTP” segment highlights engagement gaps → Accounts without PTP indicate lack of customer interaction, signaling need for improved outreach and negotiation efforts.
+
+### 6. Collector Performance Analysis
+
+-> Top collectors handle more accounts and recover higher amounts, showing strong performance and capacity.
+
+-> Total collected varies widely, highlighting differences in collector effectiveness and efficiency.
+
+-> Average calls made per collector reveal effort levels, useful for linking activity to recovery success.
+
+### 7. Aging Report
+
+-> High delinquency risk: ~50% accounts & largest debt in 90+ bucket
+
+-> Capital stuck in late stage: Majority outstanding in 90+ → difficult recovery
+
+-> Inefficient recovery pattern: ~30% recovery across all buckets (no improvement)
+
+### 8. Collection Workflow
+
+-> All accounts in critical stage: Delinquency = 180 days → all fall into “Immediate Call + Escalation”
+
+-> High recovery urgency: These are severely overdue accounts requiring aggressive action (calls, legal, escalation)
+
+-> Operational focus needed: Team should prioritize top debt amounts first within this bucket to maximize recovery
+
+### 9. Payment Negotiation Simulation
+
+-> Remaining balance visibility: Shows exact unpaid amount → helps prioritize high-value recoveries
+
+-> Dynamic settlement strategy: Higher delinquency → bigger discount (30% for 90+) to improve recovery chances
+
+-> Business impact: Balances loss vs recovery → better to recover partial amount than risk full default
+
+### 10. Compliance Awareness (FDCPA)
+
+-> Compliance risk identified: Accounts with >5 contact attempts flagged “Review Required” → potential regulatory violation
+
+-> Majority need review: Many records exceed limit → indicates over-aggressive collection approach
+
+-> Action needed: Optimize contact strategy (limit frequency, smarter outreach) to ensure ethical & compliant collections
 
 ## 📬 Author
 
