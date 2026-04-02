@@ -78,7 +78,6 @@ Simulate real-world collection action strategy.
 
 Suggested settlement strategies based on risk and delinquency.
 
----
 ### 10. Compliance Awareness (FDCPA)
 
 Maintain structured tracking for audit & compliance
